@@ -1,0 +1,12 @@
+package com.workintech.s19challenge_twitter.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+@Data
+public class TweetRequest {
+    @NotBlank(message = "Content cannot be blank")
+    @Size(min = 1, max = 280, message = "Content must be between 1 and 280 characters")
+    private String content;
+}
