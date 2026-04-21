@@ -321,7 +321,7 @@ function App() {
 
             <div className="mt-6 pt-6 border-t border-gray-100 space-y-3">
               <p className="text-center text-xs text-gray-400">
-                Test için: <span className="font-semibold text-sky-600">test</span> / <span className="font-semibold text-sky-600">123456</span>
+                For Test: <span className="font-semibold text-sky-600">test</span> / <span className="font-semibold text-sky-600">123456</span>
               </p>
               <button onClick={handleTestLogin}
                 className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-2xl text-sm hover:opacity-90 transition-opacity">
