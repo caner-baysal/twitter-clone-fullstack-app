@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
 function App() {
   const [tweets, setTweets] = useState([]);
@@ -19,8 +21,6 @@ function App() {
   const [notification, setNotification] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const currentUserRef = useRef(currentUser);
-
-  const API_URL = 'http://localhost:3000';
 
   const notify = (message, type = 'success') => {
     setNotification({ message, type });
@@ -57,30 +57,16 @@ function App() {
     return instance;
   }, []);
 
-  useEffect(() => { checkBackendConnection(); }, []);
-
-  const checkBackendConnection = async () => {
-    try {
-      setApiStatus('Backend connection test...');
-      await axios.get(`${API_URL}/test`);
-      setApiStatus('✅ Backend connected');
-      fetchUsers();
-      fetchTweets();
-    } catch {
-      setApiStatus('❌ Backend connection failed');
-    }
-  };
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/user/all`);
       setUsers(response.data);
     } catch (error) {
       console.error('Error on fetching users:', error);
     }
-  };
+  }, []);
 
-  const fetchTweets = async () => {
+  const fetchTweets = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(`${API_URL}/tweet/all`);
@@ -101,7 +87,23 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const checkBackendConnection = async () => {
+      try {
+        setApiStatus('Backend connection test...');
+        await axios.get(`${API_URL}/test`);
+        setApiStatus('✅ Backend connected');
+        fetchUsers();
+        fetchTweets();
+      } catch {
+        setApiStatus('❌ Backend connection failed');
+      }
+    };
+
+    checkBackendConnection();
+  }, [fetchUsers, fetchTweets]);
 
   const handleRegister = async () => {
     if (!newUserName.trim() || !newUserEmail.trim() || !newUserPassword.trim()) {
